@@ -4,7 +4,13 @@ import './Track.css';
 class Track extends React.Component {
   render() {
     return (
-      <p>Track</p>
+      <div className="Track">
+        <div className="Track-information">
+          <h3>{this.props.track.Name}</h3>
+          <p>{this.props.track.Artist} | {this.props.track.Album}</p>
+        </div>
+        <a className="Track-action">{ (this.props.type==='result') ? '+' : '-' }</a>
+      </div>
     )
   }
 }
