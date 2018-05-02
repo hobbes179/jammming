@@ -3,17 +3,22 @@ import './App.css';
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
 import Playlist from '../Playlist/Playlist';
+import Spotify from '../../util/Spotify';
 
 
 class App extends Component {
   constructor(props) {
     super(props);
+
+    // Bindings go here
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.shufflePlaylist = this.shufflePlaylist.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
+    this.search = this.search.bind(this);
 
+    // Establish default state
     this.state = {
       searchResults: [
       { name:'Tiny Dancer',
@@ -62,6 +67,8 @@ class App extends Component {
     }
   }
 
+
+  // Methods go here
   addTrack(track) {
     let shouldAdd = true;
     // Run through playlist and check for instances where the ID is the same as the track the user is adding.
@@ -82,7 +89,7 @@ class App extends Component {
   removeTrack(track) {
     //remove track code here
     let newPlaylist = this.state.playlistTracks;
-    newPlaylist = newPlaylist.filter(item => track.id != item.id);
+    newPlaylist = newPlaylist.filter(item => track.id !== item.id);
     this.setState({playlistTracks: newPlaylist });
     console.log('track removed'); //Show console that the track has been removed.
   }
@@ -107,8 +114,11 @@ class App extends Component {
       }
       return array;
     }
+
     let newPlaylist = shuffle(this.state.playlistTracks);
     this.setState({playlistTracks: newPlaylist });
+    //console.log(window.location.href);
+    //console.log(window.location.href.match('3'));
   }
 
   savePlaylist() {
@@ -119,30 +129,38 @@ class App extends Component {
     return trackURIs;
   }
 
+  search(term) {
+    console.log(`You want to search for ${term}`); // Log the user's search term
+    Spotify.getAccessToken();
+    console.log('access token is ' + Spotify.getAccessToken());
+    console.log('search resulted in ' + Spotify.search(term));
+  }
+
+  // Render main body and bring in top level components
   render() {
     return (
-      <body>
-        <div>
-          <h1>Ja<span className="highlight">mmm</span>ing</h1>
-          <div className="App">
-            <SearchBar />
-            <div className="App-playlist">
-              <SearchResults
-                searchResults={this.state.searchResults}
-                onAdd={this.addTrack}
-              />
-              <Playlist
-                playlistTracks={this.state.playlistTracks}
-                playlistName={this.state.playlistName}
-                onRemove={this.removeTrack}
-                onNameChange={this.updatePlaylistName}
-                onShuffle={this.shufflePlaylist}
-                onSave={this.savePlaylist}
-              />
-            </div>
+      <div>
+        <h1>Ja<span className="highlight">mmm</span>ing</h1>
+        <div className="App">
+          <SearchBar
+            onSearch={this.search}
+          />
+          <div className="App-playlist">
+            <SearchResults
+              searchResults={this.state.searchResults}
+              onAdd={this.addTrack}
+            />
+            <Playlist
+              playlistTracks={this.state.playlistTracks}
+              playlistName={this.state.playlistName}
+              onRemove={this.removeTrack}
+              onNameChange={this.updatePlaylistName}
+              onShuffle={this.shufflePlaylist}
+              onSave={this.savePlaylist}
+            />
           </div>
         </div>
-      </body>
+      </div>
     );
   }
 }

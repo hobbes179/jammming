@@ -12,13 +12,11 @@ class Playlist extends React.Component {
     this.props.onNameChange(event.target.value);
   }
 
+  // Render the playlist container and call the relevant components
   render() {
     return (
       <div className="Playlist">
-        <input
-          defaultValue={'New Playlist'}
-          onChange={this.handleNameChange}
-        />
+        <input defaultValue={'New Playlist'} onChange={this.handleNameChange} />
         <TrackList
           tracks={this.props.playlistTracks}
           onRemove={this.props.onRemove}
