@@ -24,7 +24,10 @@ class Playlist extends React.Component {
           onRemove={this.props.onRemove}
           isRemoval={true}
         />
-        <a className="Playlist-save">SAVE TO SPOTIFY</a>
+        <div className="Buttons">
+          <a className="Playlist-button" onClick={this.props.onShuffle}>SHUFFLE</a>
+          <a className="Playlist-button" onClick={this.props.onSave}>SAVE TO SPOTIFY</a>
+        </div>
       </div>
     )
   }

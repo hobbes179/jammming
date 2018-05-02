@@ -11,6 +11,8 @@ class App extends Component {
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
+    this.shufflePlaylist = this.shufflePlaylist.bind(this);
+    this.savePlaylist = this.savePlaylist.bind(this);
 
     this.state = {
       searchResults: [
@@ -86,9 +88,35 @@ class App extends Component {
   }
 
   updatePlaylistName(name) {
-    console.log(`old playlist name was ${this.state.playlistName}`); // Record starting name.
     this.setState({playlistName: name});
-    console.log(`new playlist name is ${this.state.playlistName}`); //Check that the name has changed.
+    return this.state.playlistName;
+  }
+
+  // Add shuffle button for fun and practice Fisher-Yates shuffle technique
+  shufflePlaylist() {
+    function shuffle(array) {
+      let m = array.length, t, i;
+      // While there remain elements to shuffle…
+      while (m) {
+        // Pick a remaining element…
+        i = Math.floor(Math.random() * m--);
+        // And swap it with the current element.
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+      }
+      return array;
+    }
+    let newPlaylist = shuffle(this.state.playlistTracks);
+    this.setState({playlistTracks: newPlaylist });
+  }
+
+  savePlaylist() {
+    let trackURIs = [];
+    this.state.playlistTracks.map(track => {
+      trackURIs = trackURIs + track.uri;
+    })
+    return trackURIs;
   }
 
   render() {
@@ -108,6 +136,8 @@ class App extends Component {
                 playlistName={this.state.playlistName}
                 onRemove={this.removeTrack}
                 onNameChange={this.updatePlaylistName}
+                onShuffle={this.shufflePlaylist}
+                onSave={this.savePlaylist}
               />
             </div>
           </div>
