@@ -21,49 +21,51 @@ class App extends Component {
     // Establish default state
     this.state = {
       searchResults: [
-      { name:'Tiny Dancer',
-        artist:'Elton John',
-        album:'Madam Across The Water',
-        id: 1
-      },
-      { name:'Tiny Dancer',
-        artist:'Tim McGraw',
-        album:'Love Story',
-        id: 2
-      },
-      { name:'Tiny Dancer',
-        artist:'Rockabye Baby!',
-        album:'Lullaby Renditions of Elton John',
-        id: 3
-      },
-      { name:'Tiny Dancer',
-        artist:'The White Raven',
-        album:'Tiny Dancer',
-        id: 4
-      },
-      { name:'Tiny Dancer - Live Album Version',
-        artist:'Ben Folds',
-        album:'Ben Folds Live',
-        id: 5
-      }],
+      // { name:'Tiny Dancer',
+      //   artist:'Elton John',
+      //   album:'Madam Across The Water',
+      //   id: 1
+      // },
+      // { name:'Tiny Dancer',
+      //   artist:'Tim McGraw',
+      //   album:'Love Story',
+      //   id: 2
+      // },
+      // { name:'Tiny Dancer',
+      //   artist:'Rockabye Baby!',
+      //   album:'Lullaby Renditions of Elton John',
+      //   id: 3
+      // },
+      // { name:'Tiny Dancer',
+      //   artist:'The White Raven',
+      //   album:'Tiny Dancer',
+      //   id: 4
+      // },
+      // { name:'Tiny Dancer - Live Album Version',
+      //   artist:'Ben Folds',
+      //   album:'Ben Folds Live',
+      //   id: 5
+      // }
+    ],
 
       playlistName: 'Playlist Name',
       playlistTracks: [
-      { name:'Tiny Dancer',
-        artist:'Britney Spears',
-        album:'Oops!... I Dit It Again',
-        id: 1
-      },
-      { name:'So Emotional',
-        artist:'Whitney Houston',
-        album:'Whitney',
-        id: 6
-      },
-      { name:'It\'s Not Right but It\'s Okay',
-        artist:'Whitney Houston',
-        album:'My Love Is Your Love',
-        id: 7
-      }]
+      // { name:'Tiny Dancer',
+      //   artist:'Britney Spears',
+      //   album:'Oops!... I Dit It Again',
+      //   id: 1
+      // },
+      // { name:'So Emotional',
+      //   artist:'Whitney Houston',
+      //   album:'Whitney',
+      //   id: 6
+      // },
+      // { name:'It\'s Not Right but It\'s Okay',
+      //   artist:'Whitney Houston',
+      //   album:'My Love Is Your Love',
+      //   id: 7
+      // }
+    ]
     }
   }
 
@@ -117,6 +119,9 @@ class App extends Component {
 
     let newPlaylist = shuffle(this.state.playlistTracks);
     this.setState({playlistTracks: newPlaylist });
+
+    // TEST BUTTON FEATURES HERE
+    Spotify.savePlaylist('test',this.savePlaylist);
     //console.log(window.location.href);
     //console.log(window.location.href.match('3'));
   }
@@ -131,12 +136,9 @@ class App extends Component {
 
   search(term) {
     console.log(`You want to search for ${term}`); // Log the user's search term
-    Spotify.getAccessToken();
-    console.log('access token is ' + Spotify.getAccessToken());
-
     Spotify.search(term
-    ).then(tracks => {
-      this.setState({searchResults: tracks});
+    ).then(newSearch => {
+      this.setState({searchResults: newSearch})
     });
   }
 
