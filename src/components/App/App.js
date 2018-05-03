@@ -133,7 +133,11 @@ class App extends Component {
     console.log(`You want to search for ${term}`); // Log the user's search term
     Spotify.getAccessToken();
     console.log('access token is ' + Spotify.getAccessToken());
-    console.log('search resulted in ' + Spotify.search(term));
+
+    Spotify.search(term
+    ).then(tracks => {
+      this.setState({searchResults: tracks});
+    });
   }
 
   // Render main body and bring in top level components

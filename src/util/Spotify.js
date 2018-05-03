@@ -8,19 +8,19 @@ const Spotify = {
     if (accessToken !== '') {
       return accessToken;
     }
-    else if (window.location.href.match(/access_token=([^&]*)/)) {
-      accessToken = window.location.href.match(/access_token=([^&]*)/)[1];
-      let expiresIn = window.location.href.match(/expires_in([^&]*)/)[1];
+
+    const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
+    const expiresInMatch = window.location.href.match(/expires_in([^&]*)/);
+
+    if (accessTokenMatch && expiresInMatch) {
+      accessToken = accessTokenMatch[1];
+      const expiresIn = Number(expiresInMatch[1]);
       window.setTimeout(() => accessToken = '', expiresIn * 1000);
       window.history.pushState('Access Token', null, '/');
       return accessToken;
     } else {
-      window.location.assign(`https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectURI}`);
-      accessToken = window.location.href.match(/access_token=([^&]*)/)[1];
-      let expiresIn = window.location.href.match(/expires_in([^&]*)/)[1];
-      window.setTimeout(() => accessToken = '', expiresIn * 1000);
-      window.history.pushState('Access Token', null, '/');
-      return accessToken;
+      const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectURI}`;
+      window.location = accessUrl;
     }
 
   },
@@ -37,13 +37,15 @@ const Spotify = {
   ).then(jsonResponse => {
     // Code to execute with jsonResponse
     console.log(jsonResponse);
-    // .map(track => ({
-    //   id: track.id,
-    //   name: track.name,
-    //   artist: track.artists[0].name,
-    //   album: track.album.name,
-    //   uri: track.uri
-    // }))
+    let newSearch = [];
+    newSearch=jsonResponse.tracks.items.map(track => ({
+      id: track.id,
+      name: track.name,
+      artist: track.artists[0].name,
+      album: track.album.name,
+      uri: track.uri
+    }));
+    return newSearch;
   });
   }
 
