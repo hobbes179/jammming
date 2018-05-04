@@ -1,7 +1,7 @@
 const clientId = '7677eba86972410da9d6ab22fa85a838';
 //const redirectURI = 'http://localhost:3000/';
-//const redirectURI = 'https://hobbes179.github.io/jammming';
-const redirectURI = 'hobbes179-jammming.surge.sh';
+const redirectURI = 'https://hobbes179.github.io/jammming';
+//const redirectURI = 'hobbes179-jammming.surge.sh';
 let accessToken = '';
 
 const Spotify = {
