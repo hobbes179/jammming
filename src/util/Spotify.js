@@ -2,9 +2,6 @@ const clientId = '7677eba86972410da9d6ab22fa85a838';
 const redirectURI = 'http://localhost:3000/';
 //const redirectURI = 'https://hobbes179.github.io/jammming';
 let accessToken = '';
-//let headers = {Authorization: `Bearer ${accessToken}`};
-let userId = '';
-let playlistId = '';
 
 const Spotify = {
 
@@ -32,9 +29,9 @@ const Spotify = {
 
   search(term) {
     accessToken = this.getAccessToken();
-    return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(response => {
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, { headers: headers }
+      ).then(response => {
         if (response.ok) {
           return response.json();
         }
@@ -57,67 +54,36 @@ const Spotify = {
   },
 
   savePlaylist(playlistName, trackURIs) {
-    // Make sure both input fields are present
-    accessToken = this.getAccessToken();
-    console.log(trackURIs);
+
+    // Make sure both input fields are present and set up variables
     if (playlistName==='' || trackURIs==='') {return};
-    //accessToken = this.getAccessToken();    // Check access token updated
-    console.log(accessToken);                 //Show on console
+    accessToken = this.getAccessToken();
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    let userId;
 
     // GET user's Spotify ID
-    return fetch(`https://api.spotify.com/v1/me`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        console.log(response);
-        throw new Error('ID Request failed!');
-    }, networkError => console.log(networkError.message)
-    ).then(jsonResponse => {
-    // Code to execute with jsonResponse
-      console.log(jsonResponse);
+    return fetch(`https://api.spotify.com/v1/me`, { headers: headers }
+      ).then(response => response.json()
+      ).then(jsonResponse => {
       userId = jsonResponse.id;
-      console.log(userId);
-      return
 
     // POST new playlist on user's Spotify account
-    }).then(fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+    return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: headers,
       body: JSON.stringify({name: playlistName})
-    }).then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        console.log(response);
-        throw new Error('Playlist Rename Request failed!');
-    }, networkError => console.log(networkError.message)
-    ).then(jsonResponse => {
-    // Code to execute with jsonResponse
-      console.log(jsonResponse);
-      playlistId = jsonResponse.id;
-      console.log(playlistId);
-      return
+      }).then(response => response.json()
+      ).then(jsonResponse => {
+      const playlistId = jsonResponse.id;
 
     //POST playlist tracks to new playlist
-    })).then(fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
+    return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
       method: 'POST',
-      headers: {Authorization: `Bearer ${accessToken}`,
-                ContentType: 'application/json'},
+      headers: headers,
       body: JSON.stringify({uris: trackURIs})
-    }).then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Update Tracks Request failed!');
-    }, networkError => console.log(networkError.message)
-    ).then(jsonResponse => {
-    // Code to execute with jsonResponse
-      console.log(jsonResponse);
-    }))
-
-
+      })
+    });
+  });
   }
 
 
