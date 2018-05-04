@@ -46,9 +46,9 @@ class App extends Component {
       //   album:'Ben Folds Live',
       //   id: 5
       // }
-    ],
+      ],
 
-      playlistName: 'Playlist Name',
+      playlistName: 'New Playlist',
       playlistTracks: [
       // { name:'Tiny Dancer',
       //   artist:'Britney Spears',
@@ -65,10 +65,9 @@ class App extends Component {
       //   album:'My Love Is Your Love',
       //   id: 7
       // }
-    ]
+      ]
     }
   }
-
 
   // Methods go here
   addTrack(track) {
@@ -84,7 +83,7 @@ class App extends Component {
       let newPlaylist = this.state.playlistTracks;
       newPlaylist.push(track);
       this.setState({playlistTracks: newPlaylist })
-      console.log('track added to playlist'); //Show console that track has been added.
+      console.log('track added to ' + this.state.playlistName); //Show console that track has been added.
     };
   }
 
@@ -93,12 +92,12 @@ class App extends Component {
     let newPlaylist = this.state.playlistTracks;
     newPlaylist = newPlaylist.filter(item => track.id !== item.id);
     this.setState({playlistTracks: newPlaylist });
-    console.log('track removed'); //Show console that the track has been removed.
+    console.log('track removed from ' + this.state.playlistName); //Show console that the track has been removed.
   }
 
   updatePlaylistName(name) {
     this.setState({playlistName: name});
-    return this.state.playlistName;
+    //console.log('playlist name changed to ' + this.state.playlistName);
   }
 
   // Add shuffle button for fun and practice Fisher-Yates shuffle technique
@@ -119,19 +118,14 @@ class App extends Component {
 
     let newPlaylist = shuffle(this.state.playlistTracks);
     this.setState({playlistTracks: newPlaylist });
-
-    // TEST BUTTON FEATURES HERE
-    Spotify.savePlaylist('test',this.savePlaylist);
-    //console.log(window.location.href);
-    //console.log(window.location.href.match('3'));
   }
 
   savePlaylist() {
     let trackURIs = [];
     this.state.playlistTracks.map(track => {
-      trackURIs = trackURIs + track.uri;
+      trackURIs.push(track.uri);
     })
-    return trackURIs;
+    Spotify.savePlaylist(this.state.playlistName, trackURIs);
   }
 
   search(term) {
