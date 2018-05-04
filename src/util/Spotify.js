@@ -2,7 +2,7 @@ const clientId = '7677eba86972410da9d6ab22fa85a838';
 const redirectURI = 'http://localhost:3000/';
 //const redirectURI = 'https://hobbes179.github.io/jammming';
 let accessToken = '';
-let headers = {Authorization: `Bearer ${accessToken}`};
+//let headers = {Authorization: `Bearer ${accessToken}`};
 let userId = '';
 let playlistId = '';
 
@@ -15,7 +15,7 @@ const Spotify = {
     }
     // Check to see if the URL contains the access token and expiration info
     const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
-    const expiresInMatch = window.location.href.match(/expires_in([^&]*)/);
+    const expiresInMatch = window.location.href.match(/expires_in=([^&]*)/);
 
     if (accessTokenMatch && expiresInMatch) {
       accessToken = accessTokenMatch[1];
@@ -32,8 +32,9 @@ const Spotify = {
 
   search(term) {
     accessToken = this.getAccessToken();
-    return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, { headers: headers }
-      ).then(response => {
+    return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }).then(response => {
         if (response.ok) {
           return response.json();
         }
@@ -52,7 +53,7 @@ const Spotify = {
       album: track.album.name,
       uri: track.uri
     }));
-  });
+    });
   },
 
   savePlaylist(playlistName, trackURIs) {
@@ -61,11 +62,12 @@ const Spotify = {
     console.log(trackURIs);
     if (playlistName==='' || trackURIs==='') {return};
     //accessToken = this.getAccessToken();    // Check access token updated
-    console.log(accessToken);               //Show on console
+    console.log(accessToken);                 //Show on console
 
     // GET user's Spotify ID
-    return fetch(`https://api.spotify.com/v1/me`, { headers: headers }
-      ).then(response => {
+    return fetch(`https://api.spotify.com/v1/me`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }).then(response => {
         if (response.ok) {
           return response.json();
         }
@@ -75,14 +77,14 @@ const Spotify = {
     ).then(jsonResponse => {
     // Code to execute with jsonResponse
       console.log(jsonResponse);
-      userId = jsonResponse.uri;
+      userId = jsonResponse.id;
       console.log(userId);
       return
 
     // POST new playlist on user's Spotify account
     }).then(fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
       method: 'POST',
-      headers: headers,
+      headers: { Authorization: `Bearer ${accessToken}` },
       body: JSON.stringify({name: playlistName})
     }).then(response => {
         if (response.ok) {
